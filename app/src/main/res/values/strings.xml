@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Examen Android</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">MacaCar96</string>
+    <string name="nav_header_subtitle">marcoxxx.ca@gmail.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Películas populares</string>
+    <string name="menu_gallery">Ubicaciones</string>
+    <string name="menu_slideshow">Captura de imagenes</string>
+
+    <string name="carga_datos">Cargando datos...</string>
+</resources>
