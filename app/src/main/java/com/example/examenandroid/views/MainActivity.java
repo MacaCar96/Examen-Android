@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.widget.Toast;
 
 import com.example.examenandroid.R;
+import com.example.examenandroid.db.DbHelper;
 import com.example.examenandroid.services.ServiceAdapter;
 import com.example.examenandroid.services.Services;
 import com.example.examenandroid.services.entities.ResultadosPeliculas;
@@ -69,6 +70,8 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        DbHelper dbHelper = new DbHelper(this);
 
         // Comprobar si hay internet
         /*boolean statusInternet = isOnline(this);

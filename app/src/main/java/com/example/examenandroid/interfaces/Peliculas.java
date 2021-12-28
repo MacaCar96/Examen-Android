@@ -1,20 +1,30 @@
 package com.example.examenandroid.interfaces;
 
+import android.content.Context;
+
+import com.example.examenandroid.services.entities.Pelicula;
 import com.example.examenandroid.services.entities.ResultadosPeliculas;
+
+import java.util.List;
 
 public interface Peliculas {
 
     interface  View {
-        void showResultView(ResultadosPeliculas result);
+        void showResultView(List<Pelicula> result, int size);
+        void showErrorView(String result);
     }
 
     interface Presenter {
-        void showResultPresenter(ResultadosPeliculas result);
-        void getDataPeliculasPresenter();
+        void showResultPresenter(List<Pelicula> result, int size);
+        void showErrorPresenter(String result);
+        void getDataPeliculasPresenter(Context context);
+        void getInitPresenter(Context context);
+
     }
 
     interface Interactor {
-        void getDataPeliculasInteractor();
+        void getDataPeliculasInteractor(Context context);
+        void getInitInteractor(Context context);
     }
 
 }
