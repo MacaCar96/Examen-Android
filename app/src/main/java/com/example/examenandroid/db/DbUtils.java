@@ -2,7 +2,7 @@ package com.example.examenandroid.db;
 
 public class DbUtils {
 
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
     private static final String DB_NAME = "peliculas.db";
 
     /**
@@ -12,6 +12,7 @@ public class DbUtils {
      * */
     public static final String TABLE_PELICULAS = "tbl_peliculas";
     public static final String T_COLUMN_ID_PELICULAS = "id";
+    public static final String T_COLUMN_ID_MOVIE_PELICULAS = "id_pelicula";
     public static final String T_COLUMN_BACKDROP_PATH_PELICULAS = "backdrop_path";
     public static final String T_COLUMN_ORIGINAL_TITLE_PELICULAS = "original_title";
     public static final String T_COLUMN_OVERVIEW_PELICULAS = "overview";
@@ -29,6 +30,7 @@ public class DbUtils {
     public static String getTablePeliculasCreate() {
         return "CREATE TABLE " + TABLE_PELICULAS + " (" +
                 T_COLUMN_ID_PELICULAS + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                T_COLUMN_ID_MOVIE_PELICULAS + " INTEGER NOT NULL, " +
                 T_COLUMN_BACKDROP_PATH_PELICULAS + " TEXT NULL, " +
                 T_COLUMN_ORIGINAL_TITLE_PELICULAS + " TEXT NOT NULL, " +
                 T_COLUMN_OVERVIEW_PELICULAS + " TEXT NOT NULL, " +
