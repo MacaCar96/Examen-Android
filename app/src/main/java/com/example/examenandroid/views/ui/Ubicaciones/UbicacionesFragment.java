@@ -1,4 +1,4 @@
-package com.example.examenandroid.views.ui.gallery;
+package com.example.examenandroid.views.ui.Ubicaciones;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,15 +14,15 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.example.examenandroid.R;
 
-public class GalleryFragment extends Fragment {
+public class UbicacionesFragment extends Fragment {
 
-    private GalleryViewModel galleryViewModel;
+    private UbicacionesViewModel galleryViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         galleryViewModel =
-                ViewModelProviders.of(this).get(GalleryViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_gallery, container, false);
+                ViewModelProviders.of(this).get(UbicacionesViewModel.class);
+        View root = inflater.inflate(R.layout.fragment_ubicaciones, container, false);
         final TextView textView = root.findViewById(R.id.text_gallery);
         galleryViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
