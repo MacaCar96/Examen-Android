@@ -10,30 +10,20 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.examenandroid.R;
-import com.example.examenandroid.VariablesEntorno;
 import com.example.examenandroid.adapters.PeliculasAdapter;
 import com.example.examenandroid.interfaces.Peliculas;
 import com.example.examenandroid.presenters.PeliculasPresenter;
-import com.example.examenandroid.services.ServiceAdapter;
-import com.example.examenandroid.services.Services;
 import com.example.examenandroid.services.entities.Pelicula;
-import com.example.examenandroid.services.entities.ResultadosPeliculas;
 
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class PeliculasFragment extends Fragment implements Peliculas.View {
 
-    private PeliculasViewModel peliculasViewModel;
     private Peliculas.Presenter presenter;
     private boolean statusUpdatePeliculas = false;
 
@@ -44,8 +34,7 @@ public class PeliculasFragment extends Fragment implements Peliculas.View {
     private LinearLayout linearLayoutCargandoDatos;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        peliculasViewModel = ViewModelProviders.of(this).get(PeliculasViewModel.class);
-        root = inflater.inflate(R.layout.fragment_home, container, false);
+        root = inflater.inflate(R.layout.fragment_peliculas, container, false);
         textView = root.findViewById(R.id.text_home);
         textViewCargaDatos = root.findViewById(R.id.textViewCardaDatos);
         linearLayoutCargandoDatos = root.findViewById(R.id.linearLayoutCargadoDatos);
