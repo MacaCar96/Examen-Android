@@ -1,10 +1,19 @@
 package com.example.examenandroid.views.ui.imagenes;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +22,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +38,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +46,11 @@ import java.util.List;
 public class ImagenesFragment extends Fragment {
 
     private static final int GALLERY_INTENT = 1;
+    private final static int CAMERA_INTENT = 2;
+
+    private final String CARPETA_RAIZ = "temporal/";
+    private final String RUTA_IMAGEN = CARPETA_RAIZ + "imagenes";
+    private String path = "";
 
     private View root;
     private Button buttonSeleccionarImagen, buttonSubirFoto;
@@ -62,10 +81,11 @@ public class ImagenesFragment extends Fragment {
         buttonSeleccionarImagen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                createSingleListDialog().show();
+                /*Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                startActivityForResult(intent, GALLERY_INTENT);
+                startActivityForResult(intent, GALLERY_INTENT);*/
             }
         });
 
@@ -109,55 +129,153 @@ public class ImagenesFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == GALLERY_INTENT && resultCode == Activity.RESULT_OK) {
-            //Toast.makeText(root.getContext(), "Foto recuperada", Toast.LENGTH_LONG).show();
-            //imageUri = data.getData();
+        if (resultCode == Activity.RESULT_OK) {
+            Imagen imagen;
+            switch (requestCode) {
+                case CAMERA_INTENT:
 
-            if (data.getClipData() != null) {
+                    /*MediaScannerConnection.scanFile(root.getContext(), new String[]{path}, null, new MediaScannerConnection.OnScanCompletedListener() {
+                        @Override
+                        public void onScanCompleted(String s, Uri uri) {
 
-                for (int i = 0; i < data.getClipData().getItemCount(); i++) {
-                    imageUri = data.getClipData().getItemAt(i).getUri();
-                    //Toast.makeText(root.getContext(), imageUri.getLastPathSegment(), Toast.LENGTH_LONG).show();
-                    Imagen imagen = new Imagen();
+                        }
+                    });*/
+
+                    imageUri = Uri.parse(path);
+                    imagen = new Imagen();
                     imagen.setNombreImagen(imageUri.getLastPathSegment());
                     imagen.setPathImagen(imageUri);
                     listaImagenes.add(imagen);
-                }
 
-            } else {
+                    actualizarListaImagenes();
+                    break;
+                case GALLERY_INTENT:
+                    if (data.getClipData() != null) {
 
-                if (data.getData() != null) {
-                    imageUri = data.getData();
-                    //Toast.makeText(root.getContext(), imageUri.getLastPathSegment(), Toast.LENGTH_LONG).show();
-                    Imagen imagen = new Imagen();
-                    imagen.setNombreImagen(imageUri.getLastPathSegment());
-                    imagen.setPathImagen(imageUri);
-                    listaImagenes.add(imagen);
-                } else {
-                    Toast.makeText(root.getContext(), "Seleccione imagenes...", Toast.LENGTH_LONG).show();
-                }
+                        for (int i = 0; i < data.getClipData().getItemCount(); i++) {
+                            imageUri = data.getClipData().getItemAt(i).getUri();
+                            //Toast.makeText(root.getContext(), imageUri.getLastPathSegment(), Toast.LENGTH_LONG).show();
+                            imagen = new Imagen();
+                            imagen.setNombreImagen(imageUri.getLastPathSegment());
+                            imagen.setPathImagen(imageUri);
+                            listaImagenes.add(imagen);
+                        }
 
+                    } else {
+
+                        if (data.getData() != null) {
+                            imageUri = data.getData();
+                            //Toast.makeText(root.getContext(), imageUri.getLastPathSegment(), Toast.LENGTH_LONG).show();
+                            imagen = new Imagen();
+                            imagen.setNombreImagen(imageUri.getLastPathSegment());
+                            imagen.setPathImagen(imageUri);
+                            listaImagenes.add(imagen);
+                        } else {
+                            Toast.makeText(root.getContext(), "Seleccione imagenes...", Toast.LENGTH_LONG).show();
+                        }
+
+                    }
+
+                    actualizarListaImagenes();
+                    break;
             }
 
-            ImagenesAdapter imagenesAdapter = new ImagenesAdapter(listaImagenes, root.getContext());
-            imagenesAdapter.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    /*Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(listaImagenes.get(recyclerViewImagenes.getChildAdapterPosition(view)).getPathImagen().getPath()));
-                    intent.setType("image/*");
-                    startActivity(intent);*/
-                    //final Intent intent = new Intent(Intent.ACTION_VIEW, (Uri) listaImagenes.get(recyclerViewImagenes.getChildAdapterPosition(view)).getPathImagen().getPathSegments());
 
-                }
-            });
-
-            recyclerViewImagenes.setHasFixedSize(true);
-            recyclerViewImagenes.setLayoutManager(new LinearLayoutManager(root.getContext()));
-            recyclerViewImagenes.setAdapter(imagenesAdapter);
 
         }
 
 
+    }
+
+    private void actualizarListaImagenes() {
+        ImagenesAdapter imagenesAdapter = new ImagenesAdapter(listaImagenes, root.getContext());
+        imagenesAdapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    /*Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(listaImagenes.get(recyclerViewImagenes.getChildAdapterPosition(view)).getPathImagen().getPath()));
+                    intent.setType("image/*");
+                    startActivity(intent);*/
+                //final Intent intent = new Intent(Intent.ACTION_VIEW, (Uri) listaImagenes.get(recyclerViewImagenes.getChildAdapterPosition(view)).getPathImagen().getPathSegments());
+
+            }
+        });
+
+        recyclerViewImagenes.setHasFixedSize(true);
+        recyclerViewImagenes.setLayoutManager(new LinearLayoutManager(root.getContext()));
+        recyclerViewImagenes.setAdapter(imagenesAdapter);
+    }
+
+    public AlertDialog createSingleListDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        final CharSequence[] items = new CharSequence[2];
+
+        items[0] = "Abrir camara";
+        items[1] = "Abrir galeria";
+
+        builder.setTitle("Seleccionar imagen")
+                .setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (items[which] == "Abrir camara") {
+
+                            if (checkCameraPermission() == true){
+                                File fileImage = new File(Environment.getExternalStorageDirectory(), RUTA_IMAGEN);
+                                boolean isCreada = fileImage.exists();
+                                String nombreImagem = "";
+
+                                if (isCreada == false) {
+                                    isCreada = fileImage.mkdir();
+                                }
+
+                                if (isCreada == false) {
+                                    nombreImagem = (System.currentTimeMillis() / 100) + ".jpg";
+                                }
+
+                                path = Environment.getExternalStorageDirectory() + File.separator + RUTA_IMAGEN + File.separator + nombreImagem;
+                                File imagen = new File(path);
+
+                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                    Uri contentUri = FileProvider.getUriForFile(getContext(), "com.example.examenandroid.provider", imagen);
+                                    intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
+                                    //intent.setDataAndType(contentUri, type);
+                                } else {
+                                    //intent.setDataAndType(Uri.fromFile(imagen), type);
+                                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imagen));
+
+                                }
+                                //
+                                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imagen));
+                                startActivityForResult(intent, CAMERA_INTENT);
+                            }
+
+                        } else {
+                            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                            intent.setType("image/*");
+                            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+                            startActivityForResult(intent, GALLERY_INTENT);
+                        }
+                    }
+                });
+
+        return builder.create();
+    }
+
+    private boolean checkCameraPermission() {
+        boolean statusPermission = true;
+        int permissionCheck = ContextCompat.checkSelfPermission(
+                root.getContext(), Manifest.permission.CAMERA);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            Log.i("Mensaje", "No se tiene permiso para la camara!.");
+            ActivityCompat.requestPermissions((Activity) root.getContext(), new String[]{Manifest.permission.CAMERA}, 225);
+            statusPermission = false;
+        } else {
+            statusPermission = true;
+            Log.i("Mensaje", "Tienes permiso para usar la camara.");
+        }
+        return statusPermission;
     }
 
 }
