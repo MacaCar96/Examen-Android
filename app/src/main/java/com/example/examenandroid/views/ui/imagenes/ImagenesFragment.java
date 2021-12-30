@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
@@ -38,6 +39,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -141,7 +143,11 @@ public class ImagenesFragment extends Fragment {
                         }
                     });*/
 
-                    imageUri = Uri.parse(path);
+                    Bundle extras = data.getExtras();
+                    Bitmap imgBitmap = (Bitmap) extras.get("data");
+
+
+                    imageUri = getImageUri(root.getContext(), imgBitmap);
                     imagen = new Imagen();
                     imagen.setNombreImagen(imageUri.getLastPathSegment());
                     imagen.setPathImagen(imageUri);
@@ -220,7 +226,7 @@ public class ImagenesFragment extends Fragment {
                         if (items[which] == "Abrir camara") {
 
                             if (checkCameraPermission() == true){
-                                File fileImage = new File(Environment.getExternalStorageDirectory(), RUTA_IMAGEN);
+                                /*File fileImage = new File(Environment.getExternalStorageDirectory(), RUTA_IMAGEN);
                                 boolean isCreada = fileImage.exists();
                                 String nombreImagem = "";
 
@@ -248,6 +254,9 @@ public class ImagenesFragment extends Fragment {
                                 }
                                 //
                                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imagen));
+                                startActivityForResult(intent, CAMERA_INTENT);*/
+
+                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                                 startActivityForResult(intent, CAMERA_INTENT);
                             }
 
@@ -276,6 +285,13 @@ public class ImagenesFragment extends Fragment {
             Log.i("Mensaje", "Tienes permiso para usar la camara.");
         }
         return statusPermission;
+    }
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 10, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 
 }
