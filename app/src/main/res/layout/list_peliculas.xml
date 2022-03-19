@@ -8,8 +8,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
-    app:cardCornerRadius="20dp"
-    app:cardElevation="4dp"
+    app:cardCornerRadius="@dimen/custom_card_view_radius"
+    app:cardElevation="@dimen/custom_card_view_elevation"
     app:cardUseCompatPadding="true">
 
     <LinearLayout
@@ -24,7 +24,7 @@
             <ImageView
                 android:id="@+id/imageViewPortada"
                 android:layout_width="match_parent"
-                android:layout_height="190dp"
+                android:layout_height="@dimen/custom_card_view_image"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -38,12 +38,12 @@
             android:id="@+id/textViewTitulo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp"
-            android:paddingBottom="2dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:paddingTop="@dimen/custom_size_10dp"
+            android:paddingBottom="@dimen/custom_size_2dp"
+            android:paddingLeft="@dimen/custom_size_10dp"
+            android:paddingRight="@dimen/custom_size_10dp"
             android:text="Spider-Man: No Way Home"
-            android:textSize="20dp"
+            android:textSize="@dimen/custom_size_20dp"
             android:textStyle="bold" />
 
         <TextView
@@ -51,20 +51,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="0dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:paddingBottom="@dimen/custom_size_10dp"
+            android:paddingLeft="@dimen/custom_size_10dp"
+            android:paddingRight="@dimen/custom_size_10dp"
             android:text="2021-12-15"
-            android:textSize="14dp"/>
+            android:textSize="@dimen/custom_size_14dp"/>
 
         <TextView
             android:id="@+id/textViewDescripcion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="0dp"
-            android:paddingBottom="20dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:paddingTop="@dimen/custom_size_0dp"
+            android:paddingBottom="@dimen/custom_size_20dp"
+            android:paddingLeft="@dimen/custom_size_10dp"
+            android:paddingRight="@dimen/custom_size_10dp"
             android:text="Por primera vez en la historia cinematográfica de Spider-Man, nuestro héroe, vecino y amigo es desenmascarado, y por tanto, ya no es capaz de separar su vida normal de los enormes riesgos que conlleva ser un superhéroe. Cuando pide ayuda al Doctor Strange, los riesgos pasan a ser aún más peligrosos, obligándole a descubrir lo que realmente significa ser él." />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

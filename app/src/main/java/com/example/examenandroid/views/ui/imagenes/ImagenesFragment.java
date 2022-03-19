@@ -225,7 +225,7 @@ public class ImagenesFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         if (items[which] == "Abrir camara") {
 
-                            if (checkCameraPermission() == true){
+                            if (checkCameraPermission() == true) {
                                 /*File fileImage = new File(Environment.getExternalStorageDirectory(), RUTA_IMAGEN);
                                 boolean isCreada = fileImage.exists();
                                 String nombreImagem = "";
